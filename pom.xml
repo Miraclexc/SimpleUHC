@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>xingchen</groupId>
+    <artifactId>SimpleUHC</artifactId>
+    <version>1.0.0</version>
+
+    <name>SimpleUHC</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>1.17</maven.compiler.target>
+        <maven.compiler.source>1.17</maven.compiler.source>
+        <out.name>[SimpleUHC]-${project.version}</out.name>
+        <debug.mcversion>1.18.1</debug.mcversion>
+        <debug.server>E:\Game\Minecraft\Minecraft资源库\服务器\服务端\${debug.mcversion}\plugins</debug.server>
+    </properties>
+
+    <dependencies>
+        <!--SpigotAPI -->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>${debug.mcversion}</version>
+            <scope>system</scope>
+            <systemPath>E:\Dev\Minecraft\MinecraftPlugin\api\spigot-api-1.18.1-R0.1-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>23.0.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${out.name}</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <copy file="${project.build.directory}/${out.name}.jar" todir="${debug.server}" overwrite="true" />
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

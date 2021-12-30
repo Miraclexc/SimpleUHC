@@ -1,0 +1,8 @@
+name: SimpleUHC
+main: xingchen.simpleuhc.SimpleUHC
+version: 1.0.0
+api-version: 1.18
+commands:
+  spuhc:
+    description: SimpleUHC plugin command.
+    usage: Please use /spuhc help to get detailed infomations.
