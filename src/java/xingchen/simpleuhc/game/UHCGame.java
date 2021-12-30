@@ -58,10 +58,15 @@ public class UHCGame {
         if(gaming) {
             return false;
         }
-        Bukkit.getServer().getScheduler().runTaskLater(plugin, () -> {
-
-        }, this.setting.getLastTime());
         this.gaming = true;
+        this.spreadPlayers();
+        this.players.stream().forEach(i -> {
+            i.sendTitle("游戏开始", "请努力生存到最后吧", 10, 70, 20);
+        });
+        plugin.getServer().getScheduler().runTaskLater(plugin, i -> {
+
+        }, this.setting.getLastTime() * 1000);
+
         return true;
     }
 }

@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import xingchen.simpleuhc.config.Setting;
 import xingchen.simpleuhc.game.UHCGame;
+import xingchen.simpleuhc.game.UHCGameManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,12 @@ public class SPUHCCommand implements CommandExecutor {
                         plays.add(player);
                     });
                     UHCGame game = new UHCGame(plays, Setting.getInstance().generalSetting());
-
+                    if(UHCGameManager.getInstance().newGame(game)) {
+                        sender.sendMessage("游戏即将开始……");
+                        game.start(SimpleUHC.getInstance());
+                    } else {
+                        sender.sendMessage("正在进行的游戏数已达上限，请耐心等待");
+                    }
                 }
             }
         }
