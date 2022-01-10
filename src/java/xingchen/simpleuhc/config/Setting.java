@@ -21,25 +21,23 @@ public class Setting {
 
     protected static Setting INSTANCE;
 
-    /**
-     * 地图中心
-     */
+    /**地图中心*/
     protected Location centre;
 
-    /**
-     * 地图区域限制
-     */
+    /**地图区域限制*/
     protected Area area;
 
-    /**
-     * 一局游戏时长,单位:秒
-     */
+    /**一局游戏时长,单位:秒*/
     protected int lastTime;
 
-    /**
-     * 能同时进行的最大游戏数
-     */
+    /**能同时进行的最大游戏数*/
     protected int maxGameNumber;
+
+    /**游戏大厅*/
+    protected String lobby;
+
+    /**游戏结算后多久将玩家传送出游戏，单位：毫秒*/
+    protected int delayedTime;
 
     public Setting(Plugin plugin) {
         this.plugin = plugin;
@@ -62,6 +60,8 @@ public class Setting {
             }
             this.lastTime = this.configFile.getInt("latTime", 600);
             this.maxGameNumber = this.configFile.getInt("maxGameNumber", 10);
+            this.lobby = this.configFile.getString("lobby", null);
+            this.delayedTime  = this.configFile.getInt("delayedTime", 5000);
         }
     }
 
@@ -153,6 +153,22 @@ public class Setting {
 
     public void setMaxGameNumber(int maxGameNumber) {
         this.maxGameNumber = maxGameNumber;
+    }
+
+    public String getLobby() {
+        return this.lobby;
+    }
+
+    public void setLobby(String lobby) {
+        this.lobby = lobby;
+    }
+
+    public int getDelayedTime() {
+        return this.delayedTime;
+    }
+
+    public void setDelayedTime(int delayedTime) {
+        this.delayedTime = delayedTime;
     }
 
     public static void init(Plugin plugin) {
