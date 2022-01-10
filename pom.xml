@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>1.17</maven.compiler.target>
         <maven.compiler.source>1.17</maven.compiler.source>
-        <out.name>[SimpleUHC]-${project.version}</out.name>
+        <out.name>SimpleUHC-${project.version}</out.name>
         <debug.mcversion>1.18.1</debug.mcversion>
         <debug.server>E:\Game\Minecraft\Minecraft资源库\服务器\服务端\${debug.mcversion}\plugins</debug.server>
     </properties>

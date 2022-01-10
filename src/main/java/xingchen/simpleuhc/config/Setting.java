@@ -10,7 +10,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import xingchen.simpleuhc.SimpleUHC;
 import xingchen.simpleuhc.area.Area;
-import xingchen.simpleuhc.area.RectangleArea;
 import xingchen.simpleuhc.area.RoundArea;
 import xingchen.simpleuhc.game.UHCSetting;
 

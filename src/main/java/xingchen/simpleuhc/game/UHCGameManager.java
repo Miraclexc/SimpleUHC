@@ -1,7 +1,6 @@
 package xingchen.simpleuhc.game;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import xingchen.simpleuhc.SimpleUHC;
 import xingchen.simpleuhc.config.Setting;
 
