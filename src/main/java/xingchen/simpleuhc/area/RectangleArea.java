@@ -29,7 +29,7 @@ public class RectangleArea implements Area {
 
     @Override
     public void setBorder(WorldBorder worldBorder) {
-        //无法设置矩形边界，省缺。可以考虑使用事件实现。
+
     }
 
     @Override

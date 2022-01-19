@@ -1,6 +1,10 @@
 package xingchen.simpleuhc.area;
 
 import org.bukkit.Location;
+import org.bukkit.World;
+import xingchen.simpleuhc.config.Setting;
+
+import java.io.File;
 
 public class AreaTools {
     public static Location getTopLocation(Location location) {
@@ -12,5 +16,9 @@ public class AreaTools {
             }
         }
         return null;
+    }
+
+    public static boolean deleteWorld(File worldFile) {
+        return Setting.getInstance().deleteDirectory(worldFile);
     }
 }

@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -14,6 +15,8 @@ import xingchen.simpleuhc.area.RoundArea;
 import xingchen.simpleuhc.game.UHCSetting;
 
 public class Setting {
+    public static final int TIMEUNITS = 20;
+
     private Plugin plugin;
     private Logger logger;
     private FileConfiguration configFile;
@@ -35,32 +38,36 @@ public class Setting {
     /**游戏大厅*/
     protected String lobby;
 
-    /**游戏结算后多久将玩家传送出游戏，单位：毫秒*/
+    /**游戏结算后多久将玩家传送出游戏，单位：tick*/
     protected int delayedTime;
+
+    /**游戏结束后,给玩家设置的游戏模式*/
+    protected GameMode gamemodeWhenFinished;
 
     public Setting(Plugin plugin) {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
 
-        /*if(!this.checkCongig("config.yml")) {
+        if(!this.checkCongig("config.yml")) {
             this.logger.info("配置文件未创建，正在创建...");
             plugin.saveDefaultConfig();
         } else {
             this.logger.info("配置文件已经创建，开始加载...");
-        }*/
+        }
 
         this.configFile = this.plugin.getConfig();
 
         if(this.configFile != null) {
             this.centre = this.configFile.getLocation("centreLocation", new Location(Bukkit.getServer().getWorlds().get(0), 0, 0, 0));
-            int r = this.configFile.getInt("r", 0);
-            if(r != 0) {
-                this.area = new RoundArea(r);
+            int size = this.configFile.getInt("size", 0);
+            if(size != 0) {
+                this.area = new RoundArea(2 * size);
             }
             this.lastTime = this.configFile.getInt("latTime", 600);
             this.maxGameNumber = this.configFile.getInt("maxGameNumber", 10);
             this.lobby = this.configFile.getString("lobby", null);
             this.delayedTime  = this.configFile.getInt("delayedTime", 5000);
+            this.gamemodeWhenFinished  = GameMode.valueOf(this.configFile.getString("gamemodeWhenFinished", "ADVENTURE"));
         }
     }
 
@@ -85,6 +92,21 @@ public class Setting {
             file.mkdirs();
         }
         return file;
+    }
+
+    /**
+     * 删除文件夹
+     * @param directoryToBeDeleted 待删除的文件夹
+     * @return 是否删除成功
+     */
+    public boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectory(file);
+            }
+        }
+        return directoryToBeDeleted.delete();
     }
 
     /**
@@ -168,6 +190,14 @@ public class Setting {
 
     public void setDelayedTime(int delayedTime) {
         this.delayedTime = delayedTime;
+    }
+
+    public GameMode getGamemodeWhenFinished() {
+        return this.gamemodeWhenFinished;
+    }
+
+    public void setGamemodeWhenFinished(GameMode gamemodeWhenFinished) {
+        this.gamemodeWhenFinished = gamemodeWhenFinished;
     }
 
     public static void init(Plugin plugin) {

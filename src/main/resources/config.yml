@@ -1,0 +1,6 @@
+size: 3000
+latTime: 600
+maxGameNumber: 10
+lobby: world
+delayedTime: 100
+gamemodeWhenFinished: ADVENTURE

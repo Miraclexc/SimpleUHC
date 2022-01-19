@@ -31,11 +31,15 @@ public class SPUHCCommand implements CommandExecutor {
                 sender.sendMessage("游戏时间需要为非0整数(单位:秒)");
             } else {
                 if(args.length == 1) {
-                    List<Player> plays = new ArrayList<>();
-                    Bukkit.getServer().getOnlinePlayers().stream().forEach(player -> {
-                        plays.add(player);
+                    if(Bukkit.getServer().getOnlinePlayers().size() < 2) {
+                        sender.sendMessage("游戏人数不足，无法开始游戏");
+                        return true;
+                    }
+                    List<Player> players = new ArrayList<>();
+                    Bukkit.getServer().getOnlinePlayers().stream().forEach(i -> {
+                        players.add(i);
                     });
-                    UHCGame game = new UHCGame(plays, Setting.getInstance().generalSetting());
+                    UHCGame game = new UHCGame(players, Setting.getInstance().generalSetting());
                     if(UHCGameManager.getInstance().newGame(game)) {
                         sender.sendMessage("游戏即将开始……");
                         game.start(SimpleUHC.getInstance());
