@@ -33,7 +33,7 @@ public class SPUHCCommand implements CommandExecutor {
                 if(args.length == 1) {
                     if(Bukkit.getServer().getOnlinePlayers().size() < 2) {
                         sender.sendMessage("游戏人数不足，无法开始游戏");
-                        return true;
+                        //return true;
                     }
                     List<Player> players = new ArrayList<>();
                     Bukkit.getServer().getOnlinePlayers().stream().forEach(i -> {

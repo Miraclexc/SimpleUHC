@@ -123,11 +123,12 @@ public class UHCGame {
         }
         this.forPlayersInGame(player -> {
             player.sendMessage("游戏结束，你成功生存到了最后。");
-            player.sendMessage("目前仍活着的玩家：" + this.players.stream().map(i -> i.getName()).collect(Collectors.joining(", ")));
             IntStream.range(0, 5).forEach(i -> {
                 UHCTools.spawnFirework(player.getLocation());
             });
         });
+        String alivePlayers = this.players.stream().map(i -> i.getName()).collect(Collectors.joining(", "));
+        this.forPlayersInWorld(player -> player.sendMessage("目前仍活着的玩家：" + alivePlayers));
 
         if(!isTimeout) {
             endTask.cancel();

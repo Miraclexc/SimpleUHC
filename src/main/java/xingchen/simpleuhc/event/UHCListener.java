@@ -19,6 +19,7 @@ public class UHCListener implements Listener {
         if(index >= 0) {
             Player player = event.getEntity();
             UHCGame game = UHCGameManager.getInstance().getGame(index);
+            player.spigot().respawn();
             List<Player> players = game.getPlayers();
             for(int i = 0; i < players.size(); i++) {
                 if(players.get(i).getUniqueId().equals(player.getUniqueId())) {

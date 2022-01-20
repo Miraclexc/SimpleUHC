@@ -1,6 +1,7 @@
 package xingchen.simpleuhc.area;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Entity;
@@ -34,7 +35,11 @@ public class RectangleArea implements Area {
 
     @Override
     public void spread(List<? extends Entity> entities, World world) {
-        //TODO
+        entities.stream().forEach(entity -> {
+            int randomX = (int) (Math.random() * getXRange());
+            int randomZ = (int) (Math.random() * getYRange());
+            AreaTools.randomTeleport(entity, world, randomX, randomZ);
+        });
     }
 
 
