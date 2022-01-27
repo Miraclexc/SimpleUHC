@@ -13,5 +13,7 @@ public interface Area {
 
     public void setBorder(WorldBorder worldBorder);
 
+    public void scaleBorder(WorldBorder worldBorder, double coefficient);
+
     public void spread(List<? extends Entity> entities, World world);
 }

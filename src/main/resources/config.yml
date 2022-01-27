@@ -4,3 +4,5 @@ maxGameNumber: 10
 lobby: world
 delayedTime: 100
 gamemodeWhenFinished: ADVENTURE
+shrinkTime: 100
+shrinkScale: 0.83

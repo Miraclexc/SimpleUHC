@@ -11,11 +11,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import xingchen.simpleuhc.SimpleUHC;
 import xingchen.simpleuhc.area.Area;
-import xingchen.simpleuhc.area.RoundArea;
+import xingchen.simpleuhc.area.SquareArea;
 import xingchen.simpleuhc.game.UHCSetting;
 
 public class Setting {
     public static final int TIMEUNITS = 20;
+    public static final String METADATA_NOFALL = "nofall";
 
     private Plugin plugin;
     private Logger logger;
@@ -44,15 +45,21 @@ public class Setting {
     /**游戏结束后,给玩家设置的游戏模式*/
     protected GameMode gamemodeWhenFinished;
 
+    /**多长时间后开始缩小边界,小于0则不缩小边界,单位:秒*/
+    protected int shrinkTime;
+
+    /**边界缩小的缩放程度(用于控制最小范围),值介于0~1*/
+    protected double shrinkScale;
+
     public Setting(Plugin plugin) {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
 
         if(!this.checkCongig("config.yml")) {
-            this.logger.info("配置文件未创建，正在创建...");
+            //this.logger.info("配置文件未创建，正在创建...");
             plugin.saveDefaultConfig();
         } else {
-            this.logger.info("配置文件已经创建，开始加载...");
+            //this.logger.info("配置文件已经创建，开始加载...");
         }
 
         this.configFile = this.plugin.getConfig();
@@ -61,13 +68,15 @@ public class Setting {
             this.centre = this.configFile.getLocation("centreLocation", new Location(Bukkit.getServer().getWorlds().get(0), 0, 0, 0));
             int size = this.configFile.getInt("size", 0);
             if(size != 0) {
-                this.area = new RoundArea(2 * size);
+                this.area = new SquareArea(size, (int) this.centre.getX(), (int) this.centre.getZ());
             }
             this.lastTime = this.configFile.getInt("latTime", 600);
             this.maxGameNumber = this.configFile.getInt("maxGameNumber", 10);
             this.lobby = this.configFile.getString("lobby", null);
             this.delayedTime  = this.configFile.getInt("delayedTime", 5000);
             this.gamemodeWhenFinished  = GameMode.valueOf(this.configFile.getString("gamemodeWhenFinished", "ADVENTURE"));
+            this.shrinkTime = this.configFile.getInt("shrinkTime", -1);
+            this.shrinkScale = this.configFile.getDouble("shrinkScale", 0);
         }
     }
 
@@ -141,7 +150,7 @@ public class Setting {
     }
 
     public UHCSetting generalSetting() {
-        return new UHCSetting(this.centre.clone(), this.area, this.lastTime);
+        return new UHCSetting(this.centre.clone(), this.area, this.lastTime, this.shrinkTime, this.shrinkScale);
     }
 
     public Location getCentre() {
@@ -198,6 +207,22 @@ public class Setting {
 
     public void setGamemodeWhenFinished(GameMode gamemodeWhenFinished) {
         this.gamemodeWhenFinished = gamemodeWhenFinished;
+    }
+
+    public int getShrinkTime() {
+        return this.shrinkTime;
+    }
+
+    public void setShrinkTime(int shrinkTime) {
+        this.shrinkTime = shrinkTime;
+    }
+
+    public double getShrinkScale() {
+        return this.shrinkScale;
+    }
+
+    public void setShrinkScale(double shrinkScale) {
+        this.shrinkScale = shrinkScale;
     }
 
     public static void init(Plugin plugin) {

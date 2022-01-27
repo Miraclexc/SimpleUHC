@@ -52,8 +52,11 @@ public class UHCGameManager {
      * @return 是否成功结束游戏
      */
     public synchronized boolean finishGame(int index) {
+        if(index < 0) {
+            return false;
+        }
         UHCGame game = this.games.get(index);
-        game.settle(false);
+        game.settle();
         UHCGameManager self = this;
         Bukkit.getServer().getScheduler().runTaskLater(SimpleUHC.getInstance(), () -> {
             //TODO 同样是线程问题
@@ -88,6 +91,32 @@ public class UHCGameManager {
     }
 
     /**
+     * 结束所有正在进行的游戏
+     *
+     * @param force 是否强制停止,如果强制停止,则不进行胜负判断,只执行删除世界操作
+     *
+     * @return 是否成功结束所有游戏(在强制停止的情况下总为true)
+     */
+    public boolean stopAll(boolean force) {
+        if(force) {
+            this.games.stream().forEach(game -> {
+                game.unloadWorld();
+            });
+            this.games.clear();
+            Setting.getInstance().getLogger().info("已停止所有正在进行的游戏");
+        } else {
+            boolean flag = true;
+            while(!this.games.isEmpty()) {
+                if(!this.finishGame(0)) {
+                    flag = false;
+                }
+            }
+            return flag;
+        }
+        return true;
+    }
+
+    /**
      * 获取玩家所在游戏的索引
      *
      * @param player 待搜索的玩家
@@ -109,6 +138,20 @@ public class UHCGameManager {
      */
     public UHCGame getGame(int index) {
         return this.games.get(index);
+    }
+
+    /**
+     * 根据指定游戏获取对应索引
+     *
+     * @return 返回游戏对应的索引,未找到则返回-1
+     */
+    public int getIndexFromGame(UHCGame game) {
+        for(int i = 0; i < this.games.size(); i++) {
+            if(this.games.get(i) == game) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static UHCGameManager getInstance() {

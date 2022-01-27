@@ -23,7 +23,9 @@ public class UHCGame {
     private String worldName;
 
     private boolean gaming;
-    private BukkitTask endTask;
+    private BukkitTask timer;
+    private int currentTime;
+    private UHCTimeSystem system;
 
     public UHCGame(List<Player> players, @NotNull UHCSetting setting) {
         if(players == null) {
@@ -34,6 +36,7 @@ public class UHCGame {
 
         this.setting = setting;
         this.gaming = false;
+        this.currentTime = 0;
     }
 
     /**
@@ -58,6 +61,8 @@ public class UHCGame {
      * 为游戏创建一个指定名字的新世界,并初始化
      */
     public void createWorld(String worldName) {
+        this.forPlayersInGame(i -> i.sendMessage("游戏即将开始……"));
+
         this.worldName = worldName;
         Setting.getInstance().getLogger().info("创建世界:" + worldName);
         WorldCreator creator = new WorldCreator(worldName);
@@ -77,10 +82,10 @@ public class UHCGame {
      * 将游戏所在世界中的玩家根据指定配置分散到各世界区域
      */
     public void spreadPlayers() {
-        World world = Bukkit.getServer().getWorld(worldName);
+        World world = this.getWorld();
         this.setting.getArea().spread(this.players, world);
     }
-
+    public long t = System.currentTimeMillis();
     /**
      * 开始游戏并将玩家传送到对应世界
      *
@@ -90,22 +95,33 @@ public class UHCGame {
         if(gaming) {
             return false;
         }
-        if(endTask != null) {
-            endTask.cancel();
+        if(timer != null) {
+            timer.cancel();
         }
         this.gaming = true;
         this.spreadPlayers();
         this.forPlayersInGame(i -> {
             //TODO 玩家各项属性初始化
             i.setGameMode(GameMode.SURVIVAL);
-            i.getInventory().clear();
-            i.setHealth(i.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+            UHCTools.initPlayer(i);
             i.sendTitle("游戏开始", "请努力生存到最后吧", 10, 70, 20);
         });
-        endTask = plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-            //TODO 不确定是否在同一线程
-            settle(true);
-        }, this.setting.getLastTime() * Setting.TIMEUNITS);
+        this.currentTime = 0;
+        this.system = new SimpleUHCTimeSystem();
+        UHCGame uhcgame = this;
+        this.timer = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+            if(uhcgame.currentTime >= uhcgame.setting.getLastTime()) {
+                int index = UHCGameManager.getInstance().getIndexFromGame(uhcgame);
+                uhcgame.timer.cancel();
+                uhcgame.timer = null;
+                UHCGameManager.getInstance().finishGame(index);
+                return;
+            }
+            //System.out.println("game:" + uhcgame.currentTime + "s system:" + (System.currentTimeMillis() - t) + "ms");
+            t = System.currentTimeMillis();
+            uhcgame.system.update(uhcgame, uhcgame.currentTime);
+            uhcgame.currentTime++;
+        }, 0, Setting.TIMEUNITS);
 
         return true;
     }
@@ -113,11 +129,9 @@ public class UHCGame {
     /**
      * 对游戏进行结算和告示(并不会自动执行{@link #unloadWorld()}方法)
      *
-     * @param isTimeout 游戏是否是超时导致的结束
-     *
      * @return 是否成功结束游戏
      */
-    public boolean settle(boolean isTimeout) {
+    public boolean settle() {
         if(!this.gaming) {
             return false;
         }
@@ -130,9 +144,9 @@ public class UHCGame {
         String alivePlayers = this.players.stream().map(i -> i.getName()).collect(Collectors.joining(", "));
         this.forPlayersInWorld(player -> player.sendMessage("目前仍活着的玩家：" + alivePlayers));
 
-        if(!isTimeout) {
-            endTask.cancel();
-            endTask = null;
+        if(timer != null) {
+            timer.cancel();
+            timer = null;
         }
 
         return true;
@@ -152,8 +166,7 @@ public class UHCGame {
             World lobby = Bukkit.getServer().getWorld(Setting.getInstance().getLobby());
             i.teleport(lobby.getSpawnLocation());
             i.setGameMode(Setting.getInstance().getGamemodeWhenFinished());
-            i.getInventory().clear();
-            i.setHealth(i.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+            UHCTools.initPlayer(i);
         });
 
         File worldDictionary = Bukkit.getServer().getWorld(this.worldName).getWorldFolder();
@@ -170,7 +183,7 @@ public class UHCGame {
      * @param player 待传送的玩家
      */
     public void teleportPlayerToWorld(Player player) {
-        World world = Bukkit.getServer().getWorld(this.worldName);
+        World world = this.getWorld();
         player.teleport(world.getSpawnLocation());
     }
 
@@ -186,6 +199,21 @@ public class UHCGame {
      */
     public List<Player> getPlayers() {
         return this.players;
+    }
+
+    /**
+     * 获取游戏对应的世界
+     */
+    public World getWorld() {
+        World world = Bukkit.getServer().getWorld(this.worldName);
+        return world;
+    }
+
+    /**
+     * 获取本局游戏配置
+     */
+    public UHCSetting getSetting() {
+        return this.setting;
     }
 
     /**
