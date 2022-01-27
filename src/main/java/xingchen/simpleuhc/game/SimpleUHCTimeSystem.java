@@ -1,6 +1,7 @@
 package xingchen.simpleuhc.game;
 
 import org.bukkit.World;
+import xingchen.simpleuhc.language.UHCLanguage;
 
 public class SimpleUHCTimeSystem implements UHCTimeSystem {
     protected boolean shrinking;
@@ -15,8 +16,8 @@ public class SimpleUHCTimeSystem implements UHCTimeSystem {
         if(setting.getShrinkTime() >= 0 && setting.getShrinkScale() > 0 && time >= setting.getShrinkTime()) {
             if(!this.shrinking) {
                 game.forPlayersInWorld(i -> {
-                    i.sendTitle("边界开始收缩了", "请尽快前往安全区域", 10, 70, 20);
-                    i.sendMessage("边界开始收缩了");
+                    i.sendTitle(UHCLanguage.getInstance().translate("game.title.shrinkRemind"), UHCLanguage.getInstance().translate("game.title.shrinkRemind_sub"), 10, 70, 20);
+                    i.sendMessage(UHCLanguage.getInstance().translate("game.title.shrinkRemind"));
                 });
                 this.shrinking = true;
             }

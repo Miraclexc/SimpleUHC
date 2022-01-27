@@ -1,6 +1,7 @@
 package xingchen.simpleuhc.language;
 
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class UHCLanguage {
@@ -11,7 +12,12 @@ public class UHCLanguage {
 
     public UHCLanguage() {
         this.locale = Locale.getDefault();
-        this.resourceBundle = ResourceBundle.getBundle("languages.lang", this.locale);
+        try {
+            this.resourceBundle = ResourceBundle.getBundle("languages.lang", this.locale);
+        } catch(MissingResourceException e) {
+            this.locale = new Locale("zh", "CN");
+            this.resourceBundle = ResourceBundle.getBundle("languages.lang", this.locale);
+        }
     }
 
     public String translate(String raw) {

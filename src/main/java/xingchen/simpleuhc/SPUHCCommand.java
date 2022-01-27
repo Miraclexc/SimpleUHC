@@ -13,7 +13,6 @@ import xingchen.simpleuhc.language.UHCLanguage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class SPUHCCommand implements CommandExecutor {
     public static final String USAGEFORMAT = "%s - %s";
@@ -29,27 +28,27 @@ public class SPUHCCommand implements CommandExecutor {
         }
         if(args[0].equalsIgnoreCase("start")) {
             if(Setting.getInstance().getCentre() == null) {
-                sender.sendMessage("请设置游戏地图的中心");
+                sender.sendMessage(UHCLanguage.getInstance().translate("command.message.needCentre"));
             } else if(Setting.getInstance().getArea() == null) {
-                sender.sendMessage("请设置游戏地图的范围大小");
+                sender.sendMessage(UHCLanguage.getInstance().translate("command.message.needRange"));
             } else if(Setting.getInstance().getLastTime() <=0) {
-                sender.sendMessage("游戏时间需要为非0整数(单位:秒)");
+                sender.sendMessage(UHCLanguage.getInstance().translate("command.message.needLastTime"));
             } else {
                 if(args.length == 1) {
                     if(Bukkit.getServer().getOnlinePlayers().size() < 2) {
-                        sender.sendMessage(UHCLanguage.getInstance().translate("command.remind.lackPlayers"));
+                        sender.sendMessage(UHCLanguage.getInstance().translate("command.message.lackPlayers"));
                         return true;
                     }
                     List<Player> players = new ArrayList<>();
                     Bukkit.getServer().getOnlinePlayers().stream().forEach(i -> {
                         players.add(i);
                     });
-                    sender.sendMessage("该局游戏玩家:" + players.stream().map(i -> i.getName()).collect(Collectors.joining(", ")));
+                    sender.sendMessage(String.format(UHCLanguage.getInstance().translate("command.message.currentPlayers"), players.stream().map(i -> i.getName()).collect(Collectors.joining(", "))));
                     UHCGame game = new UHCGame(players, Setting.getInstance().generalSetting());
                     if(UHCGameManager.getInstance().newGame(game)) {
                         game.start(SimpleUHC.getInstance());
                     } else {
-                        sender.sendMessage("正在进行的游戏数已达上限，请耐心等待");
+                        sender.sendMessage(UHCLanguage.getInstance().translate("command.message.full"));
                     }
                 }
             }

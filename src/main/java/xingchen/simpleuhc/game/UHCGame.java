@@ -1,13 +1,13 @@
 package xingchen.simpleuhc.game;
 
 import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import xingchen.simpleuhc.area.AreaTools;
 import xingchen.simpleuhc.config.Setting;
+import xingchen.simpleuhc.language.UHCLanguage;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,10 +61,10 @@ public class UHCGame {
      * 为游戏创建一个指定名字的新世界,并初始化
      */
     public void createWorld(String worldName) {
-        this.forPlayersInGame(i -> i.sendMessage("游戏即将开始……"));
+        this.forPlayersInGame(i -> i.sendMessage(UHCLanguage.getInstance().translate("game.message.aboutToBegin")));
 
         this.worldName = worldName;
-        Setting.getInstance().getLogger().info("创建世界:" + worldName);
+        Setting.getInstance().getLogger().info(String.format(UHCLanguage.getInstance().translate("system.debug.createWorld"), worldName));
         WorldCreator creator = new WorldCreator(worldName);
         World world = Bukkit.getServer().createWorld(creator);
         world.setDifficulty(Difficulty.HARD);
@@ -104,7 +104,7 @@ public class UHCGame {
             //TODO 玩家各项属性初始化
             i.setGameMode(GameMode.SURVIVAL);
             UHCTools.initPlayer(i);
-            i.sendTitle("游戏开始", "请努力生存到最后吧", 10, 70, 20);
+            i.sendTitle(UHCLanguage.getInstance().translate("game.title.begin"), UHCLanguage.getInstance().translate("game.title.begin_sub"), 10, 70, 20);
         });
         this.currentTime = 0;
         this.system = new SimpleUHCTimeSystem();
@@ -136,13 +136,13 @@ public class UHCGame {
             return false;
         }
         this.forPlayersInGame(player -> {
-            player.sendMessage("游戏结束，你成功生存到了最后。");
+            player.sendMessage(UHCLanguage.getInstance().translate("game.message.survived"));
             IntStream.range(0, 5).forEach(i -> {
                 UHCTools.spawnFirework(player.getLocation());
             });
         });
         String alivePlayers = this.players.stream().map(i -> i.getName()).collect(Collectors.joining(", "));
-        this.forPlayersInWorld(player -> player.sendMessage("目前仍活着的玩家：" + alivePlayers));
+        this.forPlayersInWorld(player -> player.sendMessage(String.format(UHCLanguage.getInstance().translate("game.message.currentPlayers"), alivePlayers)));
 
         if(timer != null) {
             timer.cancel();
@@ -172,7 +172,7 @@ public class UHCGame {
         File worldDictionary = Bukkit.getServer().getWorld(this.worldName).getWorldFolder();
         Bukkit.getServer().unloadWorld(this.worldName, false);
         AreaTools.deleteWorld(worldDictionary);
-        Setting.getInstance().getLogger().info("删除世界:" + this.worldName);
+        Setting.getInstance().getLogger().info(String.format(UHCLanguage.getInstance().translate("system.debug.deleteWorld"), this.worldName));
 
         return this.worldName;
     }
