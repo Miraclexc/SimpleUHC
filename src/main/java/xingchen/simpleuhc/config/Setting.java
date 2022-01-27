@@ -36,6 +36,9 @@ public class Setting {
     /**能同时进行的最大游戏数*/
     protected int maxGameNumber;
 
+    /**一局游戏最大玩家数*/
+    protected int gameMaxPlayer;
+
     /**游戏大厅*/
     protected String lobby;
 
@@ -72,6 +75,7 @@ public class Setting {
             }
             this.lastTime = this.configFile.getInt("latTime", 600);
             this.maxGameNumber = this.configFile.getInt("maxGameNumber", 10);
+            this.gameMaxPlayer = this.configFile.getInt("gameMaxPlayer", 20);
             this.lobby = this.configFile.getString("lobby", null);
             this.delayedTime  = this.configFile.getInt("delayedTime", 5000);
             this.gamemodeWhenFinished  = GameMode.valueOf(this.configFile.getString("gamemodeWhenFinished", "ADVENTURE"));
@@ -183,6 +187,14 @@ public class Setting {
 
     public void setMaxGameNumber(int maxGameNumber) {
         this.maxGameNumber = maxGameNumber;
+    }
+
+    public int getGameMaxPlayer() {
+        return this.gameMaxPlayer;
+    }
+
+    public void setGameMaxPlayer(int gameMaxPlayer) {
+        this.gameMaxPlayer = gameMaxPlayer;
     }
 
     public String getLobby() {

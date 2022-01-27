@@ -28,6 +28,13 @@
             <systemPath>E:\Dev\Minecraft\MinecraftPlugin\api\spigot-api-1.18.1-R0.1-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-parent</artifactId>
+            <version>1.16-R0.4</version>
+            <scope>system</scope>
+            <systemPath>E:\Dev\Minecraft\MinecraftPlugin\api\bungeecord-chat-1.16-R0.4.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>23.0.0</version>

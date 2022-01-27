@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="SimpleUHC" target="1.17" />
+      <module name="SimpleUHC" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

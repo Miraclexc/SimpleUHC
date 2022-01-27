@@ -1,6 +1,7 @@
 size: 3000
 latTime: 600
 maxGameNumber: 10
+gameMaxPlayer: 20
 lobby: world
 delayedTime: 100
 gamemodeWhenFinished: ADVENTURE

@@ -2,6 +2,7 @@ package xingchen.simpleuhc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import xingchen.simpleuhc.command.UHCCommand;
 import xingchen.simpleuhc.config.Setting;
 import xingchen.simpleuhc.event.UHCListener;
 
@@ -12,7 +13,9 @@ public class SimpleUHC extends JavaPlugin {
     public void onEnable() {
         INSTANCE = this;
         Setting.init(this);
-        Bukkit.getPluginCommand("spuhc").setExecutor(new SPUHCCommand());
+        UHCCommand command = new UHCCommand();
+        Bukkit.getPluginCommand("spuhc").setExecutor(command);
+        Bukkit.getPluginCommand("spuhc").setTabCompleter(command);
         Bukkit.getServer().getPluginManager().registerEvents(new UHCListener(), this);
     }
 

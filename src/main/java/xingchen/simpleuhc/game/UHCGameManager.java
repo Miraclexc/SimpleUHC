@@ -4,10 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import xingchen.simpleuhc.SimpleUHC;
 import xingchen.simpleuhc.config.Setting;
+import xingchen.simpleuhc.game.room.Room;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class UHCGameManager {
@@ -17,6 +16,7 @@ public class UHCGameManager {
 
     private List<UHCGame> games;
     private List<String> worldNames;
+    private Map<String, Room> rooms;
 
     public UHCGameManager() {
         this.games = new ArrayList<>();
@@ -24,8 +24,10 @@ public class UHCGameManager {
         IntStream.range(1, Setting.getInstance().getMaxGameNumber()).forEach(i -> {
             worldNames.add(String.format(WORLDNAMEFORMATS, i));
         });
+        this.rooms = new HashMap<>();
     }
 
+    //UHCGame相关
     /**
      * 添加新一局游戏,并初始化世界
      */
@@ -152,6 +154,76 @@ public class UHCGameManager {
             }
         }
         return -1;
+    }
+
+    //Room相关
+
+    /**
+     * 将一个房间加入到房间列表,键为房间名
+     *
+     * @param room 要加入的房间
+     *
+     * @return 对应名字的房间是否已存在
+     */
+    public boolean newRoom(Room room) {
+        if (rooms.containsKey(room.name())) {
+            return false;
+        }
+        this.rooms.put(room.name(), room);
+        return true;
+    }
+
+    /**
+     * 将玩家加入到指定房间(如果要对比密码请先判断{@link xingchen.simpleuhc.game.room.RoomImpl#checkPassword})
+     *
+     * @param name 房间列表中存在的房间名
+     * @param player 玩家
+     *
+     * @return 房间人数是否已满
+     */
+    public boolean joinRoom(String name, Player player) {
+        Room room = this.rooms.get(name);
+        if(room.getPlayers().size() < room.getMaxPlayerNumber()) {
+            room.getPlayers().add(player.getUniqueId());
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 玩家离开房间,如果玩家是房间的所有者则房间自动解散.
+     * 房间所有者为null时允许0人房间
+     *
+     * @param name 房间列表中存在的房间名
+     * @param player 玩家
+     */
+    public void leaveRoom(String name, Player player) {
+        Room room = this.rooms.get(name);
+        room.getPlayers().remove(player.getUniqueId());
+    }
+
+    /**
+     * 在列表中搜索玩家所在的房间
+     *
+     * @param player 玩家
+     *
+     * @return 找到的房间名,未找到则返回空字符串("")
+     */
+    public String getRoomNameFromPlayer(Player player) {
+        for(Map.Entry<String, Room> entry : this.rooms.entrySet()) {
+            if(entry.getValue().getPlayers().contains(player.getUniqueId())) {
+                return entry.getKey();
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 获取房间列表
+     * 应优先选用已实现的代理方法
+     */
+    public Map<String, Room> getRooms() {
+        return this.rooms;
     }
 
     public static UHCGameManager getInstance() {

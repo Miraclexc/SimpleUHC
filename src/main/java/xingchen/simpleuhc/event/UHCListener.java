@@ -12,6 +12,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffectType;
 import xingchen.simpleuhc.SimpleUHC;
@@ -73,10 +74,14 @@ public class UHCListener implements Listener {
         if(index >= 0) {
             event.getPlayer().damage(1000000);
         }
+        String name = UHCGameManager.getInstance().getRoomNameFromPlayer(event.getPlayer());
+        if(!name.isEmpty()) {
+            UHCGameManager.getInstance().leaveRoom(name, event.getPlayer());
+        }
     }
 
     @EventHandler
-    public void serverStop() {
+    public void pluginDisabled(PluginDisableEvent event) {
         UHCGameManager.getInstance().stopAll(true);
     }
 }

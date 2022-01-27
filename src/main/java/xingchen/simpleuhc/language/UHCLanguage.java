@@ -21,6 +21,9 @@ public class UHCLanguage {
     }
 
     public String translate(String raw) {
+        if(resourceBundle == null) {
+            return raw;
+        }
         return this.resourceBundle.getString(raw);
     }
 
