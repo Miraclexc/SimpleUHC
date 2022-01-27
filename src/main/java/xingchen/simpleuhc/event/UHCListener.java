@@ -38,7 +38,6 @@ public class UHCListener implements Listener {
                 }
             }
             Bukkit.getServer().getScheduler().runTaskLater(SimpleUHC.getInstance(), () -> {
-                //TODO 线程
                 player.setGameMode(GameMode.SPECTATOR);
                 game.teleportPlayerToWorld(player);
                 if(UHCGameManager.getInstance().canFinishing(index)) {
@@ -48,32 +47,14 @@ public class UHCListener implements Listener {
         }
     }
 
-    /*@EventHandler(priority = EventPriority.LOWEST)
-    public void playerFalling(EntityDamageEvent event) {
-        event.getEntity().sendMessage(event.getCause().toString() + ";" + event.getDamage());
-        if(event.getEntity() instanceof Player && EntityDamageEvent.DamageCause.FALL.equals(event.getCause())) {
-            Player player = (Player) event.getEntity();
-            if(player.hasMetadata(Setting.METADATA_NOFALL)) {
-                event.setCancelled(true);
-                event.setDamage(0);
-                player.removeMetadata(Setting.METADATA_NOFALL, SimpleUHC.getInstance());
-                //移除玩家身上所有药水效果
-                //player.getActivePotionEffects().stream().forEach(i -> player.removePotionEffect(i.getType()));
-            }
-        }
-    }*/
-
-    @EventHandler
-    public void playerJoin(PlayerJoinEvent event) {
-
-    }
-
     @EventHandler
     public void playerQuit(PlayerQuitEvent event) {
+        //判断是否在游戏中,是则令玩家死亡以出局
         int index = UHCGameManager.getInstance().getGameFromPlayer(event.getPlayer());
         if(index >= 0) {
             event.getPlayer().damage(1000000);
         }
+        //判断是否在房间中,是则离开房间
         String name = UHCGameManager.getInstance().getRoomNameFromPlayer(event.getPlayer());
         if(!name.isEmpty()) {
             UHCGameManager.getInstance().leaveRoom(name, event.getPlayer());

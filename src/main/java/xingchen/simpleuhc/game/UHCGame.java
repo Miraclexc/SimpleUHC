@@ -85,7 +85,7 @@ public class UHCGame {
         World world = this.getWorld();
         this.setting.getArea().spread(this.players, world);
     }
-    public long t = System.currentTimeMillis();
+
     /**
      * 开始游戏并将玩家传送到对应世界
      *
@@ -101,7 +101,6 @@ public class UHCGame {
         this.gaming = true;
         this.spreadPlayers();
         this.forPlayersInGame(i -> {
-            //TODO 玩家各项属性初始化
             i.setGameMode(GameMode.SURVIVAL);
             UHCTools.initPlayer(i);
             i.sendTitle(UHCLanguage.getInstance().translate("game.title.begin"), UHCLanguage.getInstance().translate("game.title.begin_sub"), 10, 70, 20);
@@ -117,8 +116,6 @@ public class UHCGame {
                 UHCGameManager.getInstance().finishGame(index);
                 return;
             }
-            //System.out.println("game:" + uhcgame.currentTime + "s system:" + (System.currentTimeMillis() - t) + "ms");
-            t = System.currentTimeMillis();
             uhcgame.system.update(uhcgame, uhcgame.currentTime);
             uhcgame.currentTime++;
         }, 0, Setting.TIMEUNITS);

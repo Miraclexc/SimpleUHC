@@ -30,10 +30,6 @@ public class UHCCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        /*if(!sender.isOp()) {
-            sendMessage(sender, "command.message.noPermission");
-            return true;
-        }*/
         if(args.length == 0 || args[0].equalsIgnoreCase("help")) {
             sendHelp(sender);
             return true;
@@ -146,6 +142,7 @@ public class UHCCommand implements TabExecutor {
             String name = UHCGameManager.getInstance().getRoomNameFromPlayer(player);
             if(!name.isEmpty()) {
                 Room room = UHCGameManager.getInstance().getRooms().get(name);
+                //房间拥有者和非拥有者分开处理
                 if(player.getUniqueId().equals(room.getOwner())) {
                     room.getPlayers().stream().forEach(i -> {
                         sendMessage(Bukkit.getServer().getPlayer(i), "command.message.roomDissolved");
@@ -165,10 +162,12 @@ public class UHCCommand implements TabExecutor {
             UHCGameManager.getInstance().getRooms().entrySet().stream().forEach(i -> {
                 int currentNumber = i.getValue().getPlayers().size();
                 int maxNumber = i.getValue().getMaxPlayerNumber();
+                //颜色设置,满人显示红色,未满显示绿色
                 String color = "§2";
                 if(currentNumber >= maxNumber) {
                     color = "§4";
                 }
+                //文字点击事件(加入游戏)设置
                 ComponentBuilder builder = new ComponentBuilder(String.format(UHCLanguage.getInstance().translate("command.message.roomListFormat"), color, i.getValue().name(), currentNumber, maxNumber));
                 builder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/spuhc join " + i.getKey()));
                 sender.spigot().sendMessage(builder.create());

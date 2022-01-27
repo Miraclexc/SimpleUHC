@@ -9,6 +9,10 @@ import xingchen.simpleuhc.game.room.Room;
 import java.util.*;
 import java.util.stream.IntStream;
 
+/**
+ * 游戏管理器
+ * 包括正在进行的游戏和未开始游戏的房间
+ */
 public class UHCGameManager {
     public static final String WORLDNAMEFORMATS = "spuhc-%d";
 
@@ -61,7 +65,6 @@ public class UHCGameManager {
         game.settle();
         UHCGameManager self = this;
         Bukkit.getServer().getScheduler().runTaskLater(SimpleUHC.getInstance(), () -> {
-            //TODO 同样是线程问题
             String worldName = game.unloadWorld();
             synchronized(self) {
                 if(worldName != null) {
@@ -157,7 +160,6 @@ public class UHCGameManager {
     }
 
     //Room相关
-
     /**
      * 将一个房间加入到房间列表,键为房间名
      *

@@ -29,7 +29,11 @@ public class AreaTools {
         return null;
     }
 
+    /**
+     * 传送实体到对应坐标的最顶层方块上
+     */
     public static void randomTeleport(Entity entity, World world, int randomX, int randomZ) {
+        //区块自带的获取最顶层方块的方法
         /*Location startLocation = new Location(world, randomX, world.getMinHeight(), randomZ);
         Location location = getTopLocation(startLocation);
         if(location == null) {
@@ -37,6 +41,7 @@ public class AreaTools {
             location.getBlock().setType(Material.GRASS_BLOCK);
             location.add(0, 2, 0);
         }*/
+        //利用HeightMap获取最顶层方块
         Block block = world.getHighestBlockAt(randomX, randomZ, HeightMap.WORLD_SURFACE);
         Location location;
         if(block.isEmpty()) {
@@ -46,7 +51,7 @@ public class AreaTools {
         } else {
             location = block.getLocation().add(0, 2, 0);
         }
-        //掉落传送法
+        //掉落传送法,需要配合事件
         /*Location location = new Location(world, randomX, world.getMaxHeight() + 1, randomZ);
         if(entity instanceof Player) {
             Player player = (Player) entity;

@@ -15,8 +15,8 @@ import xingchen.simpleuhc.area.SquareArea;
 import xingchen.simpleuhc.game.UHCSetting;
 
 public class Setting {
+    //1秒内时钟执行的次数(tps)
     public static final int TIMEUNITS = 20;
-    public static final String METADATA_NOFALL = "nofall";
 
     private Plugin plugin;
     private Logger logger;
@@ -108,7 +108,8 @@ public class Setting {
     }
 
     /**
-     * 删除文件夹
+     * 递归删除文件夹及里面的内容
+     *
      * @param directoryToBeDeleted 待删除的文件夹
      * @return 是否删除成功
      */

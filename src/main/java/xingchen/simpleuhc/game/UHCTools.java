@@ -1,7 +1,6 @@
 package xingchen.simpleuhc.game;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -12,6 +11,9 @@ public class UHCTools {
         Entity firework = location.getWorld().spawnEntity(location, EntityType.FIREWORK);
     }
 
+    /**
+     * 用于回复满传送后玩家的状态
+     */
     public static void initPlayer(Player player) {
         player.getInventory().clear();
         player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
