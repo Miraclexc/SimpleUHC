@@ -96,13 +96,14 @@ public class UHCGameManager {
     }
 
     /**
-     * 结束所有正在进行的游戏
+     * 结束所有正在进行的游戏同时清空所有房间
      *
      * @param force 是否强制停止,如果强制停止,则不进行胜负判断,只执行删除世界操作
      *
      * @return 是否成功结束所有游戏(在强制停止的情况下总为true)
      */
     public boolean stopAll(boolean force) {
+        this.rooms.clear();
         if(force) {
             this.games.stream().forEach(game -> {
                 game.unloadWorld();

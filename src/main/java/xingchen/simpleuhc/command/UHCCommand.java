@@ -30,7 +30,7 @@ public class UHCCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if(args.length == 0 || args[0].equalsIgnoreCase("help")) {
+        if(args.length == 0) {
             sendHelp(sender);
             return true;
         }
@@ -209,6 +209,8 @@ public class UHCCommand implements TabExecutor {
             } else {
                 sendMessage(sender, "command.message.full");
             }
+        } else {
+            sendHelp(sender);
         }
         /*if(args[0].equalsIgnoreCase("start")) {
             if(Setting.getInstance().getCentre() == null) {

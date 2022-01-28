@@ -63,11 +63,6 @@ public class UHCListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void pluginDisabled(PluginDisableEvent event) {
-        UHCGameManager.getInstance().stopAll(true);
-    }
-
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerTeleport(PlayerTeleportEvent event) {
         if(event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL || event.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL) {
