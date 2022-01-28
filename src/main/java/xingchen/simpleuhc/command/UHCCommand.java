@@ -203,7 +203,7 @@ public class UHCCommand implements TabExecutor {
             });
             UHCGameManager.getInstance().getRooms().remove(name);
             sender.sendMessage(String.format(UHCLanguage.getInstance().translate("command.message.currentPlayers"), players.stream().map(i -> i.getName()).collect(Collectors.joining(", "))));
-            UHCGame game = new UHCGame(players, Setting.getInstance().generalSetting());
+            UHCGame game = new UHCGame(players, Setting.getInstance().generalUHCSetting());
             if(UHCGameManager.getInstance().newGame(game)) {
                 game.start(SimpleUHC.getInstance());
             } else {

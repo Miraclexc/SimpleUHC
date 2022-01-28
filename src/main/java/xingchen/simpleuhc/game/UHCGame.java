@@ -23,9 +23,11 @@ public class UHCGame {
     private String worldName;
 
     private boolean gaming;
+    private int maxPlayerNumber;
     private BukkitTask timer;
     private int currentTime;
     private UHCTimeSystem system;
+    private UHCScoreboard scoreboard;
 
     public UHCGame(List<Player> players, @NotNull UHCSetting setting) {
         if(players == null) {
@@ -37,6 +39,7 @@ public class UHCGame {
         this.setting = setting;
         this.gaming = false;
         this.currentTime = 0;
+        this.scoreboard = UHCScoreboard.createScoreboard();
     }
 
     /**
@@ -99,9 +102,13 @@ public class UHCGame {
             timer.cancel();
         }
         this.gaming = true;
+        this.maxPlayerNumber = this.getPlayers().size();
+        this.scoreboard.clearScores();
+        this.scoreboard.init();
         this.spreadPlayers();
         this.forPlayersInGame(i -> {
             i.setGameMode(GameMode.SURVIVAL);
+            i.setScoreboard(scoreboard.getScoreboard());
             UHCTools.initPlayer(i);
             i.sendTitle(UHCLanguage.getInstance().translate("game.title.begin"), UHCLanguage.getInstance().translate("game.title.begin_sub"), 10, 70, 20);
         });
@@ -109,6 +116,8 @@ public class UHCGame {
         this.system = new SimpleUHCTimeSystem();
         UHCGame uhcgame = this;
         this.timer = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+            scoreboard.setTime(setting.lastTime - currentTime);
+            scoreboard.setPlayerNumber(players.size(), maxPlayerNumber);
             if(uhcgame.currentTime >= uhcgame.setting.getLastTime()) {
                 int index = UHCGameManager.getInstance().getIndexFromGame(uhcgame);
                 uhcgame.timer.cancel();
@@ -163,6 +172,7 @@ public class UHCGame {
             World lobby = Bukkit.getServer().getWorld(Setting.getInstance().getLobby());
             i.teleport(lobby.getSpawnLocation());
             i.setGameMode(Setting.getInstance().getGamemodeWhenFinished());
+            i.setScoreboard(Bukkit.getServer().getScoreboardManager().getMainScoreboard());
             UHCTools.initPlayer(i);
         });
 
@@ -170,6 +180,7 @@ public class UHCGame {
         Bukkit.getServer().unloadWorld(this.worldName, false);
         AreaTools.deleteWorld(worldDictionary);
         Setting.getInstance().getLogger().info(String.format(UHCLanguage.getInstance().translate("system.debug.deleteWorld"), this.worldName));
+        this.scoreboard.clearObjective();
 
         return this.worldName;
     }
@@ -199,6 +210,13 @@ public class UHCGame {
     }
 
     /**
+     * 获取游戏对应的世界名
+     */
+    public String getWorldName() {
+        return this.worldName;
+    }
+
+    /**
      * 获取游戏对应的世界
      */
     public World getWorld() {
@@ -211,6 +229,13 @@ public class UHCGame {
      */
     public UHCSetting getSetting() {
         return this.setting;
+    }
+
+    /**
+     * 获取本局游戏的计分版
+     */
+    public UHCScoreboard getScoreboard() {
+        return this.scoreboard;
     }
 
     /**

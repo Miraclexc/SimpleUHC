@@ -76,7 +76,7 @@ public class RoomImpl implements Room {
             players.add(Bukkit.getServer().getPlayer(i));
         });
         UHCGameManager.getInstance().getRooms().remove(this.name());
-        UHCGame game = new UHCGame(players, Setting.getInstance().generalSetting());
+        UHCGame game = new UHCGame(players, Setting.getInstance().generalUHCSetting());
         if(UHCGameManager.getInstance().newGame(game)) {
             game.start(SimpleUHC.getInstance());
         }

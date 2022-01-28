@@ -9,6 +9,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scoreboard.Scoreboard;
 import xingchen.simpleuhc.SimpleUHC;
 import xingchen.simpleuhc.area.Area;
 import xingchen.simpleuhc.area.SquareArea;
@@ -154,7 +155,7 @@ public class Setting {
         this.configFile = configFile;
     }
 
-    public UHCSetting generalSetting() {
+    public UHCSetting generalUHCSetting() {
         return new UHCSetting(this.centre.clone(), this.area, this.lastTime, this.shrinkTime, this.shrinkScale);
     }
 

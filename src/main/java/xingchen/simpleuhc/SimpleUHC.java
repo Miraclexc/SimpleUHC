@@ -16,7 +16,7 @@ public class SimpleUHC extends JavaPlugin {
         UHCCommand command = new UHCCommand();
         Bukkit.getPluginCommand("spuhc").setExecutor(command);
         Bukkit.getPluginCommand("spuhc").setTabCompleter(command);
-        Bukkit.getServer().getPluginManager().registerEvents(new UHCListener(), this);
+        this.getServer().getPluginManager().registerEvents(new UHCListener(), this);
     }
 
     public static SimpleUHC getInstance() {

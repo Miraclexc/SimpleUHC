@@ -9,9 +9,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffectType;
@@ -64,5 +66,17 @@ public class UHCListener implements Listener {
     @EventHandler
     public void pluginDisabled(PluginDisableEvent event) {
         UHCGameManager.getInstance().stopAll(true);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void playerTeleport(PlayerTeleportEvent event) {
+        if(event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL || event.getCause() == PlayerTeleportEvent.TeleportCause.END_PORTAL) {
+            int index = UHCGameManager.getInstance().getGameFromPlayer(event.getPlayer());
+            if(index >= 0) {
+                if(UHCGameManager.getInstance().getGame(index).getWorldName().equals(event.getFrom().getWorld().getName())) {
+                    event.setCancelled(true);
+                }
+            }
+        }
     }
 }
